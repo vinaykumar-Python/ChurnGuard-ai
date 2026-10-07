@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in · ChurnGuard AI</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=5.0">
+</head>
+<body class="login-page">
+<div class="login-shell">
+  <section class="login-visual">
+    <div class="login-orb orb-one"></div><div class="login-orb orb-two"></div>
+    <div class="login-visual-top"><div class="brand-mark login-mark">CG</div><span>CHURNGUARD <b>AI</b></span></div>
+    <div class="login-copy">
+      <span class="login-kicker">CUSTOMER RISK INTELLIGENCE</span>
+      <h1>Predict risk.<br><em>Protect customers.</em></h1>
+      <p>Turn customer signals into explainable churn insights and focused retention decisions.</p>
+    </div>
+    <div class="login-mini-dashboard">
+      <div><span>MODEL</span><strong>XGBoost</strong></div><div><span>ROC-AUC</span><strong>0.847</strong></div><div><span>PR-AUC</span><strong>0.665</strong></div>
+    </div>
+  </section>
+  <section class="login-panel">
+    <div class="login-card">
+      <div class="login-mobile-brand"><div class="brand-mark">CG</div><strong>ChurnGuard <span>AI</span></strong></div>
+      <span class="login-panel-kicker">SECURE WORKSPACE</span>
+      <h2>Welcome back</h2>
+      <p class="login-subtitle">Sign in to your customer risk workspace.</p>
+      {% if error %}<div class="alert danger">{{ error }}</div>{% endif %}
+      <form method="post" action="/login">
+        <label>Username<input name="username" required autocomplete="username" placeholder="Enter username"></label>
+        <label>Password<input type="password" name="password" required autocomplete="current-password" placeholder="Enter password"></label>
+        <button class="btn primary full login-btn">Sign in to workspace <span>→</span></button>
+      </form>
+      <div class="login-trust"><span>●</span> Protected workspace <i></i><span>MySQL</span><i></i><span>XGBoost</span></div>
+      <div class="demo-box"><strong>First setup</strong><p>Default local account: <code>admin</code> / <code>ChangeMe123!</code>. Change the credentials in <code>.env</code> before using the application.</p></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

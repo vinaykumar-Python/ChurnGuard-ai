@@ -1,0 +1,31 @@
+{
+  "project": "ChurnGuard AI",
+  "dataset": "data/customer_churn.csv",
+  "target": "Churn",
+  "selected_model": "XGBoost",
+  "selection_metric": "5-fold stratified PR-AUC mean",
+  "prediction_threshold": 0.63,
+  "threshold_selection": "Validation-set F1 optimization with recall/precision tie-breakers",
+  "training_rows": 5634,
+  "test_rows": 1409,
+  "feature_engineering": [
+    "AvgMonthlySpend",
+    "ChargesPerTenureMonth",
+    "IsNewCustomer",
+    "IsLongTenure",
+    "EstimatedCustomerValue",
+    "ActiveServiceCount",
+    "IsMonthToMonth"
+  ],
+  "model_version": "3.0-XGBoost",
+  "generated_at_utc": "2026-10-05T16:47:04.344666+00:00",
+  "notes": [
+    "XGBoost is the sole production model.",
+    "Six controlled XGBoost configurations are evaluated with stratified 5-fold cross-validation using PR-AUC.",
+    "The final test partition is kept completely outside model and threshold selection.",
+    "The prediction threshold is tuned on a validation split for F1, with recall and precision tie-breakers.",
+    "The final production pipeline is refit on all labeled data after the benchmark is recorded.",
+    "XGBoost uses scale_pos_weight derived from the training class distribution.",
+    "Metrics describe the supplied evaluation data and do not guarantee future customer outcomes."
+  ]
+}

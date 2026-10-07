@@ -1,0 +1,38 @@
+{% extends 'base.html' %}{% set heading='Prediction Result' %}{% block content %}
+<section class="prediction-hero">
+  <div class="prediction-copy">
+    <span class="tag">PREDICTION COMPLETE</span>
+    <p class="muted">Customer risk assessment</p>
+    <h2>{{ result.customer_id }}</h2>
+    <p>{{ result.customer_type or "Customer" }} · Prediction #{{ result.prediction_id }}</p>
+    <div class="prediction-summary"><span>Model: <b>XGBoost</b></span><span>Decision threshold: <b>{{ (metrics_prediction_threshold * 100)|round(0)|int }}%</b></span></div>
+  </div>
+  <div class="risk-visual risk-{{ result.risk_level|lower }}">
+    <div class="risk-ring" style="--risk: {{ result.churn_probability_percent }}%;"><div><strong>{{ result.churn_probability_percent }}%</strong><span>churn risk</span></div></div>
+    <span class="risk-badge">{{ result.risk_level }} RISK</span>
+  </div>
+</section>
+
+<section class="risk-meter panel">
+  <div class="meter-head"><div><h3>Churn probability</h3><p>Higher values indicate greater predicted likelihood of churn.</p></div><strong>{{ result.churn_probability_percent }}%</strong></div>
+  <div class="meter-track"><span style="width:{{ result.churn_probability_percent }}%"></span><i style="left:{{ (metrics_prediction_threshold * 100) }}%"></i></div>
+  <div class="meter-scale"><span>0% Low</span><span>{{ (metrics_prediction_threshold * 100)|round(0)|int }}% decision threshold</span><span>100% High</span></div>
+</section>
+
+<div class="alert warning"><strong>Interpretation:</strong> This is a statistical risk estimate, not a guarantee that the customer will churn. Combine it with customer context before taking action.</div>
+
+<div class="prediction-grid">
+  <section class="panel driver-panel"><div class="panel-head"><div><span class="section-kicker">MODEL INSIGHT</span><h3>What influenced this prediction?</h3></div><span class="count-pill">Top {{ result.explanation|length }} signals</span></div>
+    <div class="driver-list">{% for item in result.explanation %}<div class="driver-row"><div class="driver-name"><span class="driver-dot {{ 'up' if item.impact > 0 else 'down' }}"></span><span>{{ item.feature|replace('_',' ')|title }}</span></div><div class="driver-bar"><span class="{{ 'up' if item.impact > 0 else 'down' }}" style="width:{{ [((item.impact|abs) * 100)|round(1), 100]|min }}%"></span></div><b class="impact-value {{ 'positive' if item.impact > 0 else 'negative' }}">{{ '+' if item.impact > 0 else '' }}{{ '%.3f'|format(item.impact) }}</b></div>{% endfor %}</div>
+    <p class="small muted">Feature-ablation explanation: each feature is replaced with a typical dataset value and the change in predicted probability is measured.</p>
+  </section>
+
+  <section class="panel action-panel"><div class="panel-head"><div><span class="section-kicker">NEXT BEST ACTION</span><h3>Retention recommendation</h3></div></div>
+    <div class="action-priority"><span class="priority-dot"></span><div><strong>{{ result.risk_level|title }} priority</strong><p>Use the recommendation as a starting point for customer review.</p></div></div>
+    <ul class="recommendations">{% for item in result.recommendations %}<li>{{ item }}</li>{% endfor %}</ul>
+    <a class="btn primary wide" href="/retention">Open retention desk</a>
+  </section>
+</div>
+
+<section class="panel result-footer-panel"><div><span class="section-kicker">DECISION SUPPORT</span><h3>Prediction saved successfully</h3><p>The result has been stored in prediction history so the customer's risk can be tracked over time.</p></div><div class="actions"><a class="btn primary" href="/predict">New prediction</a><a class="btn ghost" href="/history">View history</a></div></section>
+{% endblock %}
